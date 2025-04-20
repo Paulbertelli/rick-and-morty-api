@@ -118,6 +118,19 @@ internal class CharacterRepositoryImpl(
 
     }
 
+    override suspend fun getCharactersFromUrls(urls: List<String>): List<Character> {
+        return urls.mapNotNull { url ->
+            val id = url.substringAfterLast("/").toIntOrNull()
+            id?.let {
+                runCatching {
+                    GetCharacterObjectIfExists(it).toModel()
+                }.getOrNull()
+            }
+        }
+    }
+
+
+
 }
 /**
  * Orchestrates the retrieval of a CharacterObject by attempting to fetch it locally first,
@@ -166,5 +179,7 @@ private object GetCharacterObjectIfExists : KoinComponent {
         if (this != null) return this
         throw Exception("Could not find Character locally and remotely.")
     }
+
+
 
 }

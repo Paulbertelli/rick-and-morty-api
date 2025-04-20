@@ -36,4 +36,6 @@ interface CharacterRepository {
      */
     suspend fun getEpisodesWhere(characterId: Int): List<Episode>
 
+    suspend fun getCharactersFromUrls(urls: List<String>): List<Character>
+
 }

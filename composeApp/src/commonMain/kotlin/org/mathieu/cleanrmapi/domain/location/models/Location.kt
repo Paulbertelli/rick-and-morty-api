@@ -1,7 +1,6 @@
-package org.mathieu.cleanrmapi.domain.location
+package org.mathieu.cleanrmapi.domain.location.models
 
 import org.mathieu.cleanrmapi.domain.character.models.Character
-
 
 /**
  * Represents a specific location within a universe or dimension.

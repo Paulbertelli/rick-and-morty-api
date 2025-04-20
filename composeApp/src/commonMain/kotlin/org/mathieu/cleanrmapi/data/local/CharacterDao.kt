@@ -16,6 +16,9 @@ interface CharacterDAO {
     @Query("select * from ${RMDatabase.CHARACTER_TABLE} where id = :id")
     suspend fun getCharacter(id: Int): CharacterObject?
 
+    @Query("SELECT * FROM ${RMDatabase.CHARACTER_TABLE} WHERE id IN (:ids)")
+    suspend fun getCharactersByIds(ids: List<Int>): List<CharacterObject>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveCharacters(characters: List<CharacterObject>)
 

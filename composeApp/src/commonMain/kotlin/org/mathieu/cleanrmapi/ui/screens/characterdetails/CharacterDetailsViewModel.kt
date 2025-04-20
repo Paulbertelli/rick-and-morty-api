@@ -31,8 +31,9 @@ class CharacterDetailsViewModel :
                         episodes = details.episodes,
                         status = details.status,
                         gender = details.gender,
-                        origin = details.origin,
-                        location = details.location
+                        origin = details.origin.name,
+                        location = details.location.name,
+                        locationId = details.location.id
                     )
                 }
             }
@@ -55,8 +56,6 @@ class CharacterDetailsViewModel :
                 sendEvent(Destination.EpisodeDetails(action.episode.id.toString()))
         }
     }
-
-
 }
 
 sealed interface CharacterDetailsState {
@@ -72,6 +71,7 @@ sealed interface CharacterDetailsState {
         val gender: CharacterGender,
         val origin: String,
         val location: String,
+        val locationId : Int
     ) : CharacterDetailsState
 
 }

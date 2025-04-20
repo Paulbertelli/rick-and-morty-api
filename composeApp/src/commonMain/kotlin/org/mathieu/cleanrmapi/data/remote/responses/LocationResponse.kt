@@ -3,23 +3,23 @@ package org.mathieu.cleanrmapi.data.remote.responses
 import kotlinx.serialization.Serializable
 
 /**
- * Represents detailed information about a location, typically received from an API response.
+ * Represents the information about a Location, typically received from an API response.
  *
- * @property id The unique identifier for the location.
- * @property name The name of the location.
- * @property type The type or category of the location.
- * @property dimension The specific dimension in which the location exists.
- * @property residents A list of characters who have last been seen or known to reside in this location.
- * @property url The unique URL endpoint specifically for this location.
- * @property created The timestamp indicating when the location was added to the database.
+ * @property id Unique identifier of the location.
+ * @property name Name of the location.
+ * @property type Le type de location.
+ * @property dimension La dimension dans laquelle la location est située.
+ * @property residentsIds Liste d’IDs de [Character] présents dans l’emplacement.
+ * @property url The unique URL endpoint specifically for this character.
+ * @property created The timestamp indicating when the character was added to the database.
  */
 @Serializable
-internal data class LocationResponse(
+data class LocationResponse(
     val id: Int,
     val name: String,
     val type: String,
     val dimension: String,
     val residents: List<String>,
     val url: String,
-    val created: String,
+    val created: String
 )

@@ -45,14 +45,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mathieu.cleanrmapi.domain.character.models.CharacterGender
 import org.mathieu.cleanrmapi.domain.character.models.CharacterStatus
 import org.mathieu.cleanrmapi.domain.episode.models.Episode
 import org.mathieu.cleanrmapi.ui.core.composables.Avatar
 import org.mathieu.cleanrmapi.ui.core.composables.BackArrow
 import org.mathieu.cleanrmapi.ui.core.composables.IconWithImage
-import org.mathieu.cleanrmapi.ui.core.composables.PreviewContent
 import org.mathieu.cleanrmapi.ui.core.composables.Screen
 import org.mathieu.cleanrmapi.ui.core.extensions.imageVector
 import org.mathieu.cleanrmapi.ui.core.extensions.text
@@ -76,7 +74,8 @@ fun CharacterDetailsScreen(
         Content(
             state = state,
             onClickBack = navController::popBackStack,
-            onAction = viewModel::handleAction
+            onAction = viewModel::handleAction,
+            navController = navController
         )
 
     }
@@ -87,7 +86,8 @@ fun CharacterDetailsScreen(
 private fun Content(
     state: CharacterDetailsState = CharacterDetailsState.Loading,
     onAction: (CharacterDetailsAction) -> Unit = { },
-    onClickBack: () -> Unit = { }
+    onClickBack: () -> Unit = { },
+    navController: NavController
 ) = Box(
     modifier = Modifier
         .fillMaxSize()
@@ -107,7 +107,8 @@ private fun Content(
             is CharacterDetailsState.Error -> ErrorView(error = it.message)
             is CharacterDetailsState.Loaded -> CharacterDetailsContent(
                 state = it,
-                onAction = onAction
+                onAction = onAction,
+                navController = navController
             )
             CharacterDetailsState.Loading -> {
                 /** TODO: Could display a Loading Animation */
@@ -136,7 +137,8 @@ private object CharacterDetailsContent {
     @Composable
     operator fun invoke(
         state: CharacterDetailsState.Loaded,
-        onAction: (CharacterDetailsAction) -> Unit
+        onAction: (CharacterDetailsAction) -> Unit,
+        navController: NavController
     ) {
 
         var offsetY by remember {
@@ -150,7 +152,8 @@ private object CharacterDetailsContent {
 
             Header(
                 state = state,
-                offsetY = offsetY
+                offsetY = offsetY,
+                navController = navController
             )
 
             LazyColumn {
@@ -158,8 +161,7 @@ private object CharacterDetailsContent {
                     if (index == 0) {
                         Box(modifier = Modifier.onGloballyPositioned { offsetY = it.positionInParent().y })
                     }
-                    
-                    
+
                     EpisodeCard(
                         modifier = Modifier
                             .padding(8.dp)
@@ -168,14 +170,9 @@ private object CharacterDetailsContent {
                             },
                         episode = episode
                     )
-
                 }
-
             }
-
         }
-
-
     }
 
 
@@ -183,7 +180,8 @@ private object CharacterDetailsContent {
     @Composable
     private fun Header(
         state: CharacterDetailsState.Loaded,
-        offsetY: Float
+        offsetY: Float,
+        navController: NavController
     ) {
 
         val density = LocalDensity.current
@@ -219,9 +217,10 @@ private object CharacterDetailsContent {
                 AdditionalInfo(
                     gender = state.gender,
                     status = state.status,
-                    location = state.location
+                    location = state.location,
+                    locationId = state.locationId,
+                    navController = navController
                 )
-
             }
         }
     }
@@ -231,7 +230,9 @@ private object CharacterDetailsContent {
     private fun AdditionalInfo(
         gender: CharacterGender,
         status: CharacterStatus,
-        location: String
+        location: String,
+        locationId: Int,
+        navController: NavController
     ) = Row(
         modifier = Modifier
             .padding(8.dp)
@@ -250,7 +251,11 @@ private object CharacterDetailsContent {
         Spacer(Modifier.width(16.dp))
 
         IconWithImage(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .clickable {
+                    navController.navigate("location_details_screen/$locationId")
+                },
             imageVector = Icons.Rounded.Home, text = location
         )
 
@@ -290,9 +295,4 @@ private object CharacterDetailsContent {
 
 }
 
-@Preview
-@Composable
-private fun CharacterDetailsPreview() = PreviewContent {
-    Content()
-}
 
